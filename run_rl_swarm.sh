@@ -31,8 +31,8 @@ export HOST_MULTI_ADDRS
 export IDENTITY_PATH
 export ORG_ID
 export HF_HUB_DOWNLOAD_TIMEOUT=120
-export CPU_ONLY=1
-export CUDA_VISIBLE_DEVICES=""
+#export CPU_ONLY=1
+#export CUDA_VISIBLE_DEVICES=""
 
 # Set default values for environment variables if not already defined
 DEFAULT_PUB_MULTI_ADDRS=""
