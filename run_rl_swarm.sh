@@ -47,6 +47,22 @@ HOST_MULTI_ADDRS=${HOST_MULTI_ADDRS:-$DEFAULT_HOST_MULTI_ADDRS}
 DEFAULT_IDENTITY_PATH="$ROOT"/swarm.pem
 IDENTITY_PATH=${IDENTITY_PATH:-$DEFAULT_IDENTITY_PATH}
 
+
+echo -e "\033[38;5;45m\033[1m"  
+# echo -e "\033[38;5;224m"
+cat << "EOF"
+    ██████  ██            ███████ ██     ██  █████  ██████  ███    ███ 
+    ██   ██ ██            ██      ██     ██ ██   ██ ██   ██ ████  ████ 
+    ██████  ██      █████ ███████ ██  █  ██ ███████ ██████  ██ ████ ██ 
+    ██   ██ ██                 ██ ██ ███ ██ ██   ██ ██   ██ ██  ██  ██ 
+    ██   ██ ███████       ███████  ███ ███  ██   ██ ██   ██ ██      ██ 
+    
+          
+           JOIN THE COMMUNITY : https://t.me/Nexgenexplore
+                                                                
+EOF
+echo -e "\033[0m"  #dat lai mau sau
+
 if [ -f "modal-login/temp-data/userData.json" ]; then
     cd modal-login
     source ~/.bashrc
