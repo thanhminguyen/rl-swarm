@@ -192,17 +192,28 @@ pip install --upgrade pip
 
 # Clone GenRL repository to user's working directory
 echo_green ">> Initializing and updating GenRL..."
-git clone --depth=1 --branch https://github.com/hiepntnaa/genrl-swarm.git "$ROOT/genrl-swarm"
 
+if [ -d "$ROOT/genrl-swarm" ]; then
+    echo_yellow ">> genrl-swarm already exists at $ROOT/genrl-swarm, skipping clone."
+else
+    git clone https://github.com/hiepntnaa/genrl-swarm "$ROOT/genrl-swarm"
+    if [ $? -ne 0 ]; then
+        echo_red "Error: Failed to clone genrl-swarm repo."
+        exit 1
+    fi
+fi
+
+# Install GenRL
 echo_green ">> Installing GenRL."
 if [ -d "$ROOT/genrl-swarm" ]; then
     cd "$ROOT/genrl-swarm"
     pip install -e .[examples]
     cd "$ROOT" 
 else
-    echo_red "Error: genrl-swarm submodule not found at $ROOT/genrl-swarm"
+    echo_red "Error: genrl-swarm directory not found at $ROOT/genrl-swarm"
     exit 1
 fi
+
 
 if [ ! -d "$ROOT/configs" ]; then
     mkdir "$ROOT/configs"
