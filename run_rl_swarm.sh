@@ -143,7 +143,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
         ngrok config add-authtoken "$NGROK_TOKEN"
 
-        nohup ngrok http 3000 > /dev/null 2>&1 &
+        nohup ngrok http 3000 &
         sleep 3
 
         NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
