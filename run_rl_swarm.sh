@@ -124,7 +124,7 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     sleep 5
 
     # Check if any .json files exist in /root/rl-swarm/modal-login/temp-data
-    if compgen -G "/root/rl-swarm/modal-login/temp-data/*.json" > /dev/null; then
+    if ls /root/rl-swarm/modal-login/temp-data/*.json 1> /dev/null 2>&1; then
         # Try to open the URL in the default browser or via ngrok
         if ! command -v ngrok &> /dev/null; then
             echo ">> Ngrok not found. Installing..."
@@ -167,8 +167,6 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     fi
 
     cd ..
-
-
 
     echo_green ">> Waiting for modal userData.json to be created..."
     while [ ! -f "modal-login/temp-data/userData.json" ]; do
