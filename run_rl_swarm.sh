@@ -200,17 +200,17 @@ pip install --upgrade pip
 echo_green ">> Initializing and updating GenRL..."
 
 if [ -d "$ROOT/genrl-swarm" ]; then
-    echo_yellow ">> genrl-swarm already exists at $ROOT/genrl-swarm, skipping clone."
+    echo ">> genrl-swarm already exists at $ROOT/genrl-swarm, skipping clone."
 else
     git clone https://github.com/hiepntnaa/genrl-swarm "$ROOT/genrl-swarm"
     if [ $? -ne 0 ]; then
-        echo_red "Error: Failed to clone genrl-swarm repo."
+        echo "Error: Failed to clone genrl-swarm repo."
         exit 1
     fi
 fi
 
 # Install GenRL
-echo_green ">> Installing GenRL."
+echo ">> Installing GenRL."
 if [ -d "$ROOT/genrl-swarm" ]; then
     cd "$ROOT/genrl-swarm"
     pip install -e .[examples]
