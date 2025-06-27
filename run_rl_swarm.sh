@@ -192,20 +192,7 @@ pip install --upgrade pip
 
 # Clone GenRL repository to user's working directory
 echo_green ">> Initializing and updating GenRL..."
-if [ ! -d "$ROOT/genrl-swarm" ]; then
-    git clone --depth=1 --branch "$GENRL_SWARM_TAG" https://github.com/hiepntnaa/genrl-swarm.git "$ROOT/genrl-swarm"
-else
-    # Check if we are on the correct tag
-    cd "$ROOT/genrl-swarm"
-    CURRENT_TAG=$(git describe --tags --exact-match 2>/dev/null || echo "unknown")
-    if [ "$CURRENT_TAG" != "$GENRL_SWARM_TAG" ]; then
-        echo_green ">> Updating genrl-swarm to tag $GENRL_SWARM_TAG..."
-        git fetch --tags
-        git checkout "$GENRL_SWARM_TAG"
-        git pull origin "$GENRL_SWARM_TAG"
-    fi
-    cd "$ROOT"
-fi
+git clone --depth=1 --branch https://github.com/hiepntnaa/genrl-swarm.git "$ROOT/genrl-swarm"
 
 echo_green ">> Installing GenRL."
 if [ -d "$ROOT/genrl-swarm" ]; then
