@@ -1,0 +1,64 @@
+
+  max_stage: ${training.max_stage}
+  max_round: ${training.max_round}
+  log_dir: ${log_dir}
+  hf_token: ${oc.env:HUGGINGFACE_ACCESS_TOKEN,null}
+  hf_push_frequency: ${training.hf_push_frequency}
+  run_mode: "train_and_evaluate"
+  bootnodes: ${communications.initial_peers}
+  game_state: 
+    _target_: genrl_swarm.state.game_state.GameState
+    round: 0
+    stage: 0
+  reward_manager:
+    _target_: genrl_swarm.rewards.DefaultRewardManager
+    reward_fn_store:
+      _target_: genrl_swarm.rewards.reward_store.RewardFnStore
+      max_rounds: ${training.max_round}
+      reward_fn_stores:
+        - _target_: genrl_swarm.rewards.reward_store.RoundRewardFnStore
+          num_stages: ${training.max_stage}
+          reward_fns:
+            - _target_: genrl_swarm.examples.rgym.rewards.RGRewards
+  trainer:
+    _target_: genrl_swarm.examples.rgym.trainer.GRPOTrainerModule
+    models:
+      - _target_: transformers.AutoModelForCausalLM.from_pretrained
+        pretrained_model_name_or_path: ${oc.env:MODEL_NAME, ${gpu_model_choice:${default_large_model_pool},${default_small_model_pool}}} 
+    config:
+      _target_: trl.trainer.GRPOConfig
+      logging_dir: ${log_dir}
+      fp16: ${training.fp16}
+    log_with: wandb
+    log_dir: ${log_dir}
+    epsilon: 0.2
+    epsilon_high: 0.28
+    num_generations: ${training.num_generations}
+    judge_base_url: ${eval.judge_base_url}
+  data_manager:
+    _target_: genrl_swarm.examples.rgym.data.ReasoningGymDataManager
+    yaml_config_path: "genrl-swarm/src/genrl_swarm/examples/rgym/datasets.yaml"
+    num_train_samples: 2
+    num_evaluation_samples: 0
+    system_prompt_id: 'default'
+    seed: ${training.seed}
+    num_transplant_trees: ${training.num_transplant_trees}
+  communication:
+    _target_: genrl_swarm.communication.hivemind.hivemind_backend.HivemindBackend
+    initial_peers: ${communications.initial_peers}
+    identity_path: ${oc.env:IDENTITY_PATH,null}
+  coordinator:
+    _target_: genrl_swarm.blockchain.coordinator.ModalSwarmCoordinator
+    web3_url: ${blockchain.alchemy_url}
+    contract_address: ${blockchain.contract_address}
+    org_id: ${blockchain.org_id}
+    modal_proxy_url: ${blockchain.modal_proxy_url}
+    
+default_large_model_pool: 
+  - nvidia/AceInstruct-1.5B
+  - dnotitia/Smoothie-Qwen3-1.7B
+  - Gensyn/Qwen2.5-1.5B-Instruct
+
+default_small_model_pool:
+  - Gensyn/Qwen2.5-0.5B-Instruct
+  - Qwen/Qwen3-0.6B
