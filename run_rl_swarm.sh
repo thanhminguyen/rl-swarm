@@ -125,6 +125,10 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
 
     # Check if any .json files exist in /root/rl-swarm/modal-login/temp-data
     if ls /root/rl-swarm/modal-login/temp-data/*.json 1> /dev/null 2>&1; then
+        echo_green ">> Modal login already detected. Skipping ngrok."
+    else
+        echo ">> No modal login found. Starting ngrok for login..."
+
         # Try to open the URL in the default browser or via ngrok
         if ! command -v ngrok &> /dev/null; then
             echo ">> Ngrok not found. Installing..."
@@ -140,7 +144,6 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         ngrok config add-authtoken "$NGROK_TOKEN"
 
         nohup ngrok http 3000 > /dev/null 2>&1 &
-
         sleep 3
 
         NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
@@ -162,11 +165,10 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         else
             echo_red ">> ❌ Could not retrieve ngrok public URL."
         fi
-    else
-        echo ">> Skipping ngrok setup — no .json file found in modal-login/temp-data."
     fi
 
     cd ..
+
 
     echo_green ">> Waiting for modal userData.json to be created..."
     while [ ! -f "modal-login/temp-data/userData.json" ]; do
