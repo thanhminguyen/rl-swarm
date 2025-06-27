@@ -1,4 +1,4 @@
-
+  ---
   max_stage: ${training.max_stage}
   max_round: ${training.max_round}
   log_dir: ${log_dir}
