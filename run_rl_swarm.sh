@@ -123,45 +123,51 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
     echo "Started server process: $SERVER_PID"
     sleep 5
 
-    # Try to open the URL in the default browser or via ngrok
-    if ! command -v ngrok &> /dev/null; then
-        echo ">> Ngrok not found. Installing..."
-        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | \
-            sudo tee /etc/apt/trusted.gpg.d/ngrok.asc > /dev/null
-        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | \
-            sudo tee /etc/apt/sources.list.d/ngrok.list > /dev/null
-        sudo apt update > /dev/null
-        sudo apt install -y ngrok > /dev/null
-    fi
+    # Check if any .json files exist in /root/rl-swarm/modal-login/temp-data
+    if compgen -G "/root/rl-swarm/modal-login/temp-data/*.json" > /dev/null; then
+        # Try to open the URL in the default browser or via ngrok
+        if ! command -v ngrok &> /dev/null; then
+            echo ">> Ngrok not found. Installing..."
+            curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | \
+                sudo tee /etc/apt/trusted.gpg.d/ngrok.asc > /dev/null
+            echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | \
+                sudo tee /etc/apt/sources.list.d/ngrok.list > /dev/null
+            sudo apt update > /dev/null
+            sudo apt install -y ngrok > /dev/null
+        fi
 
-    read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
-    ngrok config add-authtoken "$NGROK_TOKEN"
+        read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
+        ngrok config add-authtoken "$NGROK_TOKEN"
 
-    nohup ngrok http 3000 > /dev/null 2>&1 &
+        nohup ngrok http 3000 > /dev/null 2>&1 &
 
-    sleep 3
+        sleep 3
 
-    NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
-        | grep -o '"public_url":"https:[^"]*' \
-        | cut -d '"' -f4)
+        NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
+            | grep -o '"public_url":"https:[^"]*' \
+            | cut -d '"' -f4)
 
-    if [ -z "$DOCKER" ]; then
-        if open http://localhost:3000 2> /dev/null; then
-            echo_green ">> Successfully opened http://localhost:3000 in your default browser."
+        if [ -z "$DOCKER" ]; then
+            if open http://localhost:3000 2> /dev/null; then
+                echo_green ">> Successfully opened http://localhost:3000 in your default browser."
+            else
+                echo ">> Failed to open http://localhost:3000. Please open it manually."
+            fi
         else
-            echo ">> Failed to open http://localhost:3000. Please open it manually."
+            echo_green ">> Please open http://localhost:3000 in your host browser."
+        fi
+
+        if [ -n "$NGROK_URL" ]; then
+            echo_green ">> ✅ Remote access via ngrok: $NGROK_URL"
+        else
+            echo_red ">> ❌ Could not retrieve ngrok public URL."
         fi
     else
-        echo_green ">> Please open http://localhost:3000 in your host browser."
-    fi
-
-    if [ -n "$NGROK_URL" ]; then
-        echo_green ">> ✅ Remote access via ngrok: $NGROK_URL"
-    else
-        echo_red ">> ❌ Could not retrieve ngrok public URL."
+        echo ">> Skipping ngrok setup — no .json file found in modal-login/temp-data."
     fi
 
     cd ..
+
 
 
     echo_green ">> Waiting for modal userData.json to be created..."
