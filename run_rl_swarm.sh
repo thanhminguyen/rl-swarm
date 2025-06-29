@@ -140,8 +140,12 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
             sudo apt install -y ngrok > /dev/null
         fi
 
-        read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
-        ngrok config add-authtoken "$NGROK_TOKEN"
+        if [ ! -f "/root/.config/ngrok/ngrok.yml" ]; then
+            read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
+            ngrok config add-authtoken "$NGROK_TOKEN"
+        else
+            echo ">> Ngrok config already exists. Skipping token setup."
+        fi
 
         nohup ngrok http 3000 &
         sleep 3
