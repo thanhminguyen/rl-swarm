@@ -140,14 +140,10 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
             sudo apt install -y ngrok > /dev/null
         fi
 
-        if [ ! -f "/root/.config/ngrok/ngrok.yml" ]; then
-            read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
-            ngrok config add-authtoken "$NGROK_TOKEN"
-        else
-            echo ">> Ngrok config already exists. Skipping token setup."
-        fi
+        read -p ">> Enter your ngrok auth token: " NGROK_TOKEN
+        ngrok config add-authtoken "$NGROK_TOKEN"
 
-        nohup ngrok http 3000 &
+        nohup ngrok http 3000 > /dev/null 2>&1 &
         sleep 3
 
         NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
@@ -165,9 +161,9 @@ if [ "$CONNECT_TO_TESTNET" = true ]; then
         fi
 
         if [ -n "$NGROK_URL" ]; then
-            echo_green ">> ✅ Remote access via ngrok: $NGROK_URL"
+            echo_green ">> ? Remote access via ngrok: $NGROK_URL"
         else
-            echo_red ">> ❌ Could not retrieve ngrok public URL."
+            echo_red ">> ? Could not retrieve ngrok public URL."
         fi
     fi
 
