@@ -5,7 +5,7 @@ training:
   max_stage: 1
   hf_push_frequency: 0
   num_generations: 2
-  num_transplant_trees: 0
+  num_transplant_trees: 1
   seed: 10
   fp16: false # set this line to true if your hardware supports fp16
 
