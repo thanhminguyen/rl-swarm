@@ -40,6 +40,7 @@ class SwarmGameManager(BaseGameManager, DefaultGameManagerMixin):
         log_dir: str = "logs",
         hf_token: str | None = None,
         hf_push_frequency: int = 20,
+        submit_frequency: int = 3,
         **kwargs,
     ):
 
