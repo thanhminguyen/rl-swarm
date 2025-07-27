@@ -81,7 +81,7 @@ class SwarmGameManager(BaseGameManager, DefaultGameManagerMixin):
         self.communication.step_ = (
             self.state.round
         )  # initialize communication module to contract's round
-
+        self.submit_frequency = submit_frequency
         # enable push to HF if token was provided
         self.hf_token = hf_token
         if self.hf_token not in [None, "None"]:
